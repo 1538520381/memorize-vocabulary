@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import { isEmail } from '@/utils/validate'
 export default {
     name: 'signup',
     data() {

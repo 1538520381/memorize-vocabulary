@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="buttonContainer">
-                <el-button class="loginButton" type="primary">登录</el-button>
+                <el-button class="loginButton" type="primary" @click="login()">登录</el-button>
             </div>
             <div class="otherContainer">
                 <div class="loginType" @click="loginType = 1 - loginType">
@@ -46,7 +46,8 @@
 </template>
 
 <script>
-import { isEmail } from '@/utils/validate'
+import { sendCode } from '@/api/util'
+import { login } from '@/api/user/login'
 export default {
     name: 'index',
     data() {
@@ -63,6 +64,7 @@ export default {
         }
     },
     methods: {
+        //发送验证码
         sendCode() {
             if (this.timestamp == 0) {
                 if (isEmail(this.user.email)) {
@@ -74,12 +76,40 @@ export default {
                             clearInterval(clock)
                         }
                     }, 1000);
+                    sendCode(this.email).then((res) => {
+                        if (res.data.code == 1) {
+
+                        } else {
+                            this.$message.error(res.data.msg)
+                        }
+                    })
                 } else {
                     this.$message.error('邮箱不合法');
                 }
             } else {
                 this.$message.error('请在' + this.timestamp + '秒后重试')
             }
+        },
+        //登录
+        login() {
+            if (this.loginType == 0) {
+                var user = {
+                    email: this.user.email,
+                    password: this.user.password
+                }
+            } else {
+                var user = {
+                    email: this.user.email,
+                    code: this.user.code
+                }
+            }
+            login(user).then((res) => {
+                if (res.data.code == 1) {
+                    this.$router.push('/main')
+                } else {
+                    this.$message.error(res.code.msg)
+                }
+            })
         }
     }
 }
