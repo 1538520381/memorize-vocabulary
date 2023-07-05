@@ -4,8 +4,8 @@
             <div class="titleContainer">
                 10ve4Word5
             </div>
-            <div class="loginContainer">
-                登录
+            <div class="signupContainer">
+                注册
             </div>
             <div class="formContainer">
                 <div class="inputContainer">
@@ -14,13 +14,13 @@
                     </div>
                     <input class="input" placeholder="邮箱" v-model="user.email">
                 </div>
-                <div class="inputContainer" v-if="loginType == 0">
+                <div class="inputContainer">
                     <div class="iconContainer">
                         <svg-icon class="icon" icon-class="password"></svg-icon>
                     </div>
                     <input class="input" placeholder="密码" v-model="user.password">
                 </div>
-                <div class="inputContainer" v-if="loginType == 1">
+                <div class="inputContainer">
                     <div class="iconContainer">
                         <svg-icon class="icon" icon-class="code"></svg-icon>
                     </div>
@@ -33,13 +33,8 @@
             <div class="buttonContainer">
                 <el-button class="loginButton" type="primary">登录</el-button>
             </div>
-            <div class="otherContainer">
-                <div class="loginType" @click="loginType = 1 - loginType">
-                    {{ loginType == 0 ? '验证码登录' : '密码登录' }}
-                </div>
-                <div class="signup" @click="$router.push('/signup')">
-                    注册
-                </div>
+            <div class="signup" @click="$router.push('/login')">
+                已有账号？点击登录
             </div>
         </div>
     </div>
@@ -48,7 +43,7 @@
 <script>
 import { isEmail } from '@/utils/validate'
 export default {
-    name: 'index',
+    name: 'signup',
     data() {
         return {
             user: {
@@ -56,8 +51,6 @@ export default {
                 password: '',
                 code: ''
             },
-
-            loginType: 0,
 
             timestamp: 0,
         }
@@ -110,7 +103,7 @@ export default {
     font-weight: bold;
 }
 
-.loginContainer {
+.signupContainer {
     width: 100%;
     height: 60px;
     display: flex;
@@ -183,21 +176,11 @@ export default {
     font-size: 18px;
 }
 
-.otherContainer {
-    width: 100%;
-    padding-top: 5px;
-}
-
-.loginType {
-    color: rgb(64, 158, 255);
-    float: left;
-    font-size: 20px;
-    cursor: pointer;
-}
-
 .signup {
     color: rgb(64, 158, 256);
-    float: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 20px;
 }
 </style>
