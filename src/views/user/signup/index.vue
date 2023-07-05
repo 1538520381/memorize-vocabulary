@@ -18,7 +18,7 @@
                     <div class="iconContainer">
                         <svg-icon class="icon" icon-class="password"></svg-icon>
                     </div>
-                    <input class="input" placeholder="密码" v-model="user.password">
+                    <input class="input" type="password" placeholder="密码" v-model="user.password">
                 </div>
                 <div class="inputContainer">
                     <div class="iconContainer">
@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="buttonContainer">
-                <el-button class="loginButton" type="primary">登录</el-button>
+                <el-button class="loginButton" type="primary" @click="signup()">注册</el-button>
             </div>
             <div class="signup" @click="$router.push('/login')">
                 已有账号？点击登录
@@ -41,6 +41,12 @@
 </template>
 
 <script>
+import { isEmail, isExist } from '@/utils/validate'
+import { setUserToken, setMemorizedWords } from '@/utils/localStroageUtil'
+
+import { sendCode } from '@/api/util'
+import { signup } from '@/api/user/signup'
+
 export default {
     name: 'signup',
     data() {
@@ -55,6 +61,7 @@ export default {
         }
     },
     methods: {
+        //发送验证码
         sendCode() {
             if (this.timestamp == 0) {
                 if (isEmail(this.user.email)) {
@@ -65,12 +72,42 @@ export default {
                         if (_this.timestamp == 0) {
                             clearInterval(clock)
                         }
-                    }, 1000);
+                    }, 1000)
+                    sendCode(this.email).then((res) => {
+                        if (res.data.code == 1) {
+
+                        } else {
+                            this.$message.error(res.data.msg)
+                        }
+                    })
                 } else {
-                    this.$message.error('邮箱不合法');
+                    this.$message.error('邮箱格式错误!');
                 }
             } else {
                 this.$message.error('请在' + this.timestamp + '秒后重试')
+            }
+        },
+        signup() {
+            if (isEmail(this.user.email)) {
+                if (this.user.password.length >= 8) {
+                    if (isExist(this.user.code)) {
+                        signup(this.user).then((res) => {
+                            if (res.data.code == 1) {
+                                this.$router.push('/main')
+                                setUserToken(res.data.data.token)
+                                setMemorizedWords(res.data.data.userStudy)
+                            } else {
+                                this.$message.error(res.data.msg)
+                            }
+                        })
+                    } else {
+                        this.$message.error('请输入验证码')
+                    }
+                } else {
+                    this.$message.error('密码位数请大于等于8位')
+                }
+            } else {
+                this.$message.error('邮箱格式错误!')
             }
         }
     }
@@ -89,7 +126,6 @@ export default {
 
 .mainContainer {
     width: 80%;
-    height: 600px;
 }
 
 .titleContainer {

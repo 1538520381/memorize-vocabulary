@@ -1,5 +1,6 @@
 const userTokenKey = 'userToken'
 const adminTokenKey = 'adminToken'
+const memorizedWordsKey = 'memorizedWords'
 
 export function getUserToken() {
   return localStorage.getItem(userTokenKey)
@@ -23,4 +24,12 @@ export function setAdminToken(token) {
 
 export function removeAdminToken() {
   return localStorage.removeItem(adminTokenKey)
+}
+
+export function getMemorizedWords() {
+  return localStorage.getItem(memorizedWordsKey)
+}
+
+export function setMemorizedWords(memorizedWords) {
+  return localStorage.setItem(memorizedWordsKey, memorizedWords)
 }

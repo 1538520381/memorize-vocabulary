@@ -18,7 +18,7 @@
                     <div class="iconContainer">
                         <svg-icon class="icon" icon-class="password"></svg-icon>
                     </div>
-                    <input class="input" placeholder="密码" v-model="user.password">
+                    <input class="input" type="password" placeholder="密码" v-model="user.password">
                 </div>
                 <div class="inputContainer" v-if="loginType == 1">
                     <div class="iconContainer">
@@ -46,8 +46,12 @@
 </template>
 
 <script>
+import { isEmail, isExist } from '@/utils/validate'
+import { setUserToken, setMemorizedWords } from '@/utils/localStroageUtil'
+
 import { sendCode } from '@/api/util'
 import { login } from '@/api/user/login'
+
 export default {
     name: 'index',
     data() {
@@ -75,7 +79,7 @@ export default {
                         if (_this.timestamp == 0) {
                             clearInterval(clock)
                         }
-                    }, 1000);
+                    }, 1000)
                     sendCode(this.email).then((res) => {
                         if (res.data.code == 1) {
 
@@ -84,7 +88,7 @@ export default {
                         }
                     })
                 } else {
-                    this.$message.error('邮箱不合法');
+                    this.$message.error('邮箱格式错误!');
                 }
             } else {
                 this.$message.error('请在' + this.timestamp + '秒后重试')
@@ -92,24 +96,38 @@ export default {
         },
         //登录
         login() {
-            if (this.loginType == 0) {
-                var user = {
-                    email: this.user.email,
-                    password: this.user.password
-                }
-            } else {
-                var user = {
-                    email: this.user.email,
-                    code: this.user.code
-                }
-            }
-            login(user).then((res) => {
-                if (res.data.code == 1) {
-                    this.$router.push('/main')
+            if (isEmail(this.user.email)) {
+                if (this.loginType == 0) {
+                    if (isExist(this.user.password)) {
+                        var user = {
+                            email: this.user.email,
+                            password: this.user.password
+                        }
+                    } else {
+                        return this.$message.error('请输入密码')
+                    }
                 } else {
-                    this.$message.error(res.code.msg)
+                    if (isExist(this.user.code)) {
+                        var user = {
+                            email: this.user.email,
+                            code: this.user.code
+                        }
+                    } else {
+                        return this.$message.error('请输入验证码')
+                    }
                 }
-            })
+                login(user).then((res) => {
+                    if (res.data.code == 1) {
+                        this.$router.push('/main')
+                        setUserToken(res.data.data.token)
+                        setMemorizedWords(res.data.data.userStudy)
+                    } else {
+                        this.$message.error(res.code.msg)
+                    }
+                })
+            } else {
+                this.$message.error('邮箱格式错误!')
+            }
         }
     }
 }
@@ -127,7 +145,6 @@ export default {
 
 .mainContainer {
     width: 80%;
-    height: 600px;
 }
 
 .titleContainer {
