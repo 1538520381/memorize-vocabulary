@@ -4,6 +4,15 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 export const constantRoutes = [
+    {
+        path: '/',
+        redirect: '/index'
+    },
+    {
+        path: '/index',
+        name: 'index',
+        component: () => import('@/views/login')
+    }
 ]
 
 const createRouter = () => new VueRouter({
