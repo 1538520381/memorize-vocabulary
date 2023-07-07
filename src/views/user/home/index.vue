@@ -12,7 +12,7 @@
                     <div class="bookTitle">
                         四级词汇
                     </div>
-                    <div class="selectBook">
+                    <div class="selectBook" @click="$router.push('/bookList')">
                         更改➢
                     </div>
                 </div>
