@@ -36,7 +36,7 @@
                 </div>
             </el-main>
             <el-footer class="footerContainer">
-                <Menu :current="'1'"></Menu>
+                <Menu :current="1"></Menu>
             </el-footer>
         </el-container>
     </div>

@@ -1,6 +1,6 @@
 <template>
     <div class="menu">
-        <div class="menuItem">
+        <div class="menuItem" @click="goTo(1)">
             <div class="iconContainer">
                 <svg-icon :class="current == 1 ? 'currentIcon' : 'icon'" icon-class="home"></svg-icon>
             </div>
@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="menuItem">
-            <div class="iconContainer">
+            <div class="iconContainer" @click="goTo(2)">
                 <svg-icon :class="current == 2 ? 'currentIcon' : 'icon'" icon-class="my"></svg-icon>
             </div>
             <div :class="current == 2 ? 'currentLabelContainer' : 'labelContainer'">
@@ -25,8 +25,16 @@ export default {
     props: [
         'current'
     ],
-    created() {
-
+    methods: {
+        goTo(id) {
+            if (id != this.current) {
+                if (id == 1) {
+                    this.$router.push('/home')
+                } else {
+                    this.$router.push('/me')
+                }
+            }
+        }
     }
 }
 </script>
