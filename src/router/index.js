@@ -19,9 +19,9 @@ export const constantRoutes = [
         component: () => import('@/views/user/signup')
     },
     {
-        path: '/main',
-        name: 'main',
-        component: () => import('@/views/user/main')
+        path: '/home',
+        name: 'home',
+        component: () => import('@/views/user/home')
     }
 ]
 

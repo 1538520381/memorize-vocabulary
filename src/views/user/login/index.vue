@@ -118,7 +118,7 @@ export default {
                 }
                 login(user).then((res) => {
                     if (res.data.code == 1) {
-                        this.$router.push('/main')
+                        this.$router.push('/home')
                         setUserToken(res.data.data.token)
                         setMemorizedWords(res.data.data.userStudy)
                     } else {

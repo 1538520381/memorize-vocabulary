@@ -87,13 +87,14 @@ export default {
                 this.$message.error('请在' + this.timestamp + '秒后重试')
             }
         },
+        //注册
         signup() {
             if (isEmail(this.user.email)) {
                 if (this.user.password.length >= 8) {
                     if (isExist(this.user.code)) {
                         signup(this.user).then((res) => {
                             if (res.data.code == 1) {
-                                this.$router.push('/main')
+                                this.$router.push('/home')
                                 setUserToken(res.data.data.token)
                                 setMemorizedWords(res.data.data.userStudy)
                             } else {
