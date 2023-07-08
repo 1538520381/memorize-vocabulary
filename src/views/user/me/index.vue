@@ -4,14 +4,14 @@
             <el-main class="mainContainer">
                 <div class="avatarContainer">
                     <div class="avatar">
-                        我是头像
+                        {{ user.avatar }}
                     </div>
                 </div>
                 <div class="nickname">
-                    我是昵称
+                    {{ user.nickname }}
                 </div>
                 <div class="logoutButtonContainer">
-                    <el-button class="logoutButton" type="primary">退出登录</el-button>
+                    <el-button class="logoutButton" type="primary" @click="logout()">退出登录</el-button>
                 </div>
             </el-main>
             <el-footer class="footerContainer">
@@ -22,11 +22,43 @@
 </template>
 
 <script>
+import { getUser, logout } from '@/api/user/me';
 import Menu from '@/components/user/menu/Menu.vue';
+import { removeUserToken } from '@/utils/localStroageUtil';
 export default {
     name: 'home',
     components: {
         Menu
+    },
+    data() {
+        return {
+            user: {}
+        }
+    },
+    created() {
+        this.getUser()
+    },
+    methods: {
+        getUser() {
+            getUser().then((res) => {
+                if (res.data.code == 1) {
+                    this.user = res.data.data
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            })
+        },
+        logout() {
+            logout().then((res) => {
+                if (res.data.code == 1) {
+                    this.$message.success('登出成功')
+                    removeUserToken()
+                    this.$router.push('/login')
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            })
+        }
     }
 }
 </script>
@@ -45,33 +77,33 @@ export default {
     padding-top: 20px;
 }
 
-.avatarContainer{
+.avatarContainer {
     width: 100px;
     height: 100px;
     padding: 0px calc(50% - 50px) 0px calc(50% - 50px);
 }
 
-.avatar{
+.avatar {
     width: 100%;
     height: 100%;
     background-color: aquamarine;
 }
 
-.nickname{
+.nickname {
     width: 100%;
     margin-top: 20px;
     text-align: center;
     font-size: 24px;
 }
 
-.logoutButtonContainer{
+.logoutButtonContainer {
     width: 100%;
     margin-top: 20px;
     display: flex;
     justify-content: center;
 }
 
-.logoutButton{
+.logoutButton {
     width: 100px;
 }
 
