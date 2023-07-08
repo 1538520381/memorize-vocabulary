@@ -43,7 +43,10 @@
 
 <script>
 export default {
-    name: 'bookList'
+    name: 'bookList',
+    created(){
+        
+    }
 }
 </script>
 
