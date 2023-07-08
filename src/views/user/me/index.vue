@@ -22,7 +22,8 @@
 </template>
 
 <script>
-import { getUser, logout } from '@/api/user/me';
+import { logout } from '@/api/user/me';
+import { getUser } from '@/api/util';
 import Menu from '@/components/user/menu/Menu.vue';
 import { removeUserToken } from '@/utils/localStroageUtil';
 export default {

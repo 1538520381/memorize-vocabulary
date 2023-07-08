@@ -10,3 +10,11 @@ export function sendCode(email) {
         }
     })
 }
+
+//获取账号信息
+export function getUser(){
+    return request({
+        url: '/me',
+        method: 'get'
+    })
+}

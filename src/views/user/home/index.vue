@@ -43,11 +43,31 @@
 </template>
 
 <script>
+import { getUser } from '@/api/util';
 import Menu from '@/components/user/menu/Menu.vue';
 export default {
     name: 'home',
     components: {
         Menu
+    },
+    data() {
+        return {
+            user: {}
+        }
+    },
+    created() {
+        this.getUser()
+    },
+    methods: {
+        getUser() {
+            getUser().then((res) => {
+                if (res.data.code == 1) {
+                    this.user = res.data.data
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            })
+        }
     }
 }
 </script>
