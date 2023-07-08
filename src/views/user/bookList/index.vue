@@ -6,21 +6,24 @@
                 </el-page-header>
             </el-header>
             <el-main class="mainContainer">
+                <div class="searchConatiner">
+                    <input class="searchInput" placeholder="请输入您要查询的书名" v-model="search" @change="getBookList()">
+                </div>
                 <div class="booksContainer">
-                    <div class="bookContainer">
+                    <div class="bookContainer" v-for="item in bookList">
                         <div class="bookPhoto">
-                            我是词书封面
+                            {{ item.cover }}
                         </div>
                         <div class="informationContainer">
                             <div class="nameContainer">
-                                四级词汇
+                                {{ item.title }}
                             </div>
                             <div class="wordNumContainer">
-                                1000词
+                                {{ item.num }}
                             </div>
                         </div>
                         <div class="useBookButtonContainer">
-                            <el-button class="useBookButton" type="primary">选择此书</el-button>
+                            <el-button class="useBookButton" type="primary" @click="chooseBook(item.id)">选择此书</el-button>
                         </div>
                     </div>
                     <div class="bookContainer">
@@ -33,7 +36,7 @@
             </el-main>
             <el-footer class="footerContainer">
                 <div class="paginationContainer">
-                    <el-pagination layout="prev, pager, next" :total="50">
+                    <el-pagination layout="prev, pager, next" :sizes="page">
                     </el-pagination>
                 </div>
             </el-footer>
@@ -42,10 +45,40 @@
 </template>
 
 <script>
+import { chooseBook, getBookList } from '@/api/user/bookList';
+
 export default {
     name: 'bookList',
-    created(){
-        
+    data() {
+        return {
+            bookList: [],
+            page: 1,
+            pageNum: 3,
+            search: ''
+        }
+    },
+    created() {
+        this.getBookList()
+    },
+    methods: {
+        getBookList() {
+            getBookList(this.page, this.pageNum, this.search).then((res) => {
+                if (res.data.code == 1) {
+                    this.bookList = res.data.data
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            })
+        },
+        chooseBook(bookId) {
+            chooseBook(bookId).then((res) => {
+                if (res.data.code == 1) {
+                    this.getBookList()
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            })
+        }
     }
 }
 </script>
@@ -67,13 +100,29 @@ export default {
 
 .mainContainer {
     height: 80%;
+}
+
+.searchConatiner {
+    width: 100%;
+    height: 80px;
     display: flex;
     justify-content: center;
+    align-items: center;
+}
+
+.searchInput {
+    width: 80%;
+    height: 66%;
+    padding: 2px 15px 2px 15px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    font-size: 20px;
 }
 
 .booksContainer {
-    width: calc(90% - 40px);
-    height: calc(100% - 60px);
+    width: calc(100% - 60px);
+    height: calc(100% - 140px);
     padding: 20px 30px 20px 30px;
     border-radius: 30px;
     background-color: aliceblue;
@@ -94,13 +143,13 @@ export default {
     background-color: rgb(238, 240, 240);
 }
 
-.informationContainer{
+.informationContainer {
     width: 70%;
     height: 50%;
     float: left;
 }
 
-.nameContainer{
+.nameContainer {
     width: calc(60% - 10px);
     height: 100%;
     padding-left: 10px;
@@ -110,7 +159,7 @@ export default {
     align-items: center;
 }
 
-.wordNumContainer{
+.wordNumContainer {
     width: 40%;
     height: 100%;
     font-size: 16px;
@@ -119,7 +168,7 @@ export default {
     align-items: center;
 }
 
-.useBookButtonContainer{
+.useBookButtonContainer {
     width: 70%;
     height: 50%;
     float: left;
@@ -128,7 +177,7 @@ export default {
     align-items: center;
 }
 
-.useBookButton{
+.useBookButton {
     width: 60%;
     height: 80%;
 }
