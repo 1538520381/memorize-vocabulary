@@ -10,7 +10,7 @@
         </div>
         <div class="menuItem">
             <div class="iconContainer" @click="goTo(2)">
-                <svg-icon :class="current == 2 ? 'currentIcon' : 'icon'" icon-class="my"></svg-icon>
+                <svg-icon :class="current == 2 ? 'currentIcon' : 'icon'" icon-class="me"></svg-icon>
             </div>
             <div :class="current == 2 ? 'currentLabelContainer' : 'labelContainer'">
                 我的

@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="modeContainer">
-                    <div class="selfTestMode">
+                    <div class="selfTestMode" @click="$router.push('/test')">
                         <div class="picture">
                             我是图片
                         </div>
@@ -25,7 +25,7 @@
                             自测
                         </div>
                     </div>
-                    <div class="testMode">
+                    <div class="testMode" @click="$router.push('/test')">
                         <div class="picture">
                             我是图片
                         </div>
@@ -128,14 +128,14 @@ export default {
     background-color: white;
 }
 
-.mode{
+.mode {
     width: calc(100% - 120px);
     height: 100%;
     float: left;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size:40px;
+    font-size: 40px;
     color: white;
 }
 
