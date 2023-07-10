@@ -1,11 +1,13 @@
 import request from '@/utils/request'
 
-export function signup(user){
+export function signup(email,password,code){
     return request({
-        url: '/register',
+        url: '/user/register',
         method: 'post',
         data: {
-            loginForm: user
+          email: email,
+          password: password,
+          code: code
         }
     })
 }

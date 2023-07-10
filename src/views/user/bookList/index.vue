@@ -12,7 +12,7 @@
                 <div class="booksContainer">
                     <div class="bookContainer" v-for="item in bookList">
                         <div class="bookPhoto">
-                            {{ item.cover }}
+                            <img :src="item.cover">
                         </div>
                         <div class="informationContainer">
                             <div class="nameContainer">
@@ -25,12 +25,6 @@
                         <div class="useBookButtonContainer">
                             <el-button class="useBookButton" type="primary" @click="chooseBook(item.id)">选择此书</el-button>
                         </div>
-                    </div>
-                    <div class="bookContainer">
-
-                    </div>
-                    <div class="bookContainer">
-
                     </div>
                 </div>
             </el-main>
@@ -73,6 +67,7 @@ export default {
         chooseBook(bookId) {
             chooseBook(bookId).then((res) => {
                 if (res.data.code == 1) {
+                    this.$message.success('选择成功')
                     this.getBookList()
                 } else {
                     this.$message.error(res.data.msg)

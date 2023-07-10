@@ -80,7 +80,7 @@ export default {
                             clearInterval(clock)
                         }
                     }, 1000)
-                    sendCode(this.email).then((res) => {
+                    sendCode(this.user.email).then((res) => {
                         if (res.data.code == 1) {
 
                         } else {
@@ -99,32 +99,33 @@ export default {
             if (isEmail(this.user.email)) {
                 if (this.loginType == 0) {
                     if (isExist(this.user.password)) {
-                        var user = {
-                            email: this.user.email,
-                            password: this.user.password
-                        }
+                        login(this.user.email, this.user.password, null).then((res) => {
+                            if (res.data.code == 1) {
+                                this.$router.push('/home')
+                                setUserToken(res.data.data.token)
+                                setMemorizedWords(res.data.data.userStudy)
+                            } else {
+                                this.$message.error(res.data.msg)
+                            }
+                        })
                     } else {
                         return this.$message.error('请输入密码')
                     }
                 } else {
                     if (isExist(this.user.code)) {
-                        var user = {
-                            email: this.user.email,
-                            code: this.user.code
-                        }
+                        login(this.user.email, null, this.user.code).then((res) => {
+                            if (res.data.code == 1) {
+                                this.$router.push('/home')
+                                setUserToken(res.data.data.token)
+                                setMemorizedWords(res.data.data.userStudy)
+                            } else {
+                                this.$message.error(res.data.msg)
+                            }
+                        })
                     } else {
                         return this.$message.error('请输入验证码')
                     }
                 }
-                login(user).then((res) => {
-                    if (res.data.code == 1) {
-                        this.$router.push('/home')
-                        setUserToken(res.data.data.token)
-                        setMemorizedWords(res.data.data.userStudy)
-                    } else {
-                        this.$message.error(res.code.msg)
-                    }
-                })
             } else {
                 this.$message.error('邮箱格式错误!')
             }

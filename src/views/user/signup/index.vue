@@ -64,6 +64,7 @@ export default {
         //发送验证码
         sendCode() {
             if (this.timestamp == 0) {
+                console.log(this.user.email)
                 if (isEmail(this.user.email)) {
                     this.timestamp = 60
                     var _this = this
@@ -73,7 +74,7 @@ export default {
                             clearInterval(clock)
                         }
                     }, 1000)
-                    sendCode(this.email).then((res) => {
+                    sendCode(this.user.email).then((res) => {
                         if (res.data.code == 1) {
 
                         } else {
@@ -92,11 +93,12 @@ export default {
             if (isEmail(this.user.email)) {
                 if (this.user.password.length >= 8) {
                     if (isExist(this.user.code)) {
-                        signup(this.user).then((res) => {
+                        signup(this.user.email,this.user.password,this.user.code).then((res) => {
                             if (res.data.code == 1) {
-                                this.$router.push('/home')
-                                setUserToken(res.data.data.token)
-                                setMemorizedWords(res.data.data.userStudy)
+                                // this.$router.push('/home')
+                                // setUserToken(res.data.data.token)
+                                // setMemorizedWords(res.data.data.userStudy)
+                                this.$router.push('/login')
                             } else {
                                 this.$message.error(res.data.msg)
                             }

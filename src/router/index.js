@@ -34,9 +34,9 @@ export const constantRoutes = [
         component: () => import('@/views/user/bookList')
     },
     {
-        path: '/test',
-        name: 'test',
-        component: () => import('@/views/user/test')
+        path: '/exam',
+        name: 'exam',
+        component: () => import('@/views/user/exam')
     }
 ]
 

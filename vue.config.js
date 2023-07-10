@@ -2,6 +2,7 @@ const { defineConfig } = require('@vue/cli-service')
 const path = require('path')
 
 module.exports = defineConfig({
+  // publicPath: './',
   transpileDependencies: true,
   lintOnSave: false,
   chainWebpack: config => {
@@ -17,5 +18,10 @@ module.exports = defineConfig({
       .loader('svg-sprite-loader')
       .options({ symbolId: 'icon-[name]' })
       .end()
+  },
+  devServer: {
+    client: {
+      overlay: false
+    }
   }
 })

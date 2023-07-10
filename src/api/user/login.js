@@ -1,12 +1,14 @@
 import request from '@/utils/request'
 
 //登录
-export function login(user) {
+export function login(email, password,code) {
     return request({
-        url: '/login',
+        url: '/user/login',
         method: 'post',
         data: {
-            loginForm: user
+            email: email,
+            password: password,
+            code: code
         }
     })
 }

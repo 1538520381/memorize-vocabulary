@@ -2,11 +2,12 @@ import request from '@/utils/request'
 
 //获取问题
 export function getQuestions(hadStudy){
+    console.log(hadStudy)
     return request({
-        url: '/study',
-        method: 'get',
+        url: '/study/learn',
+        method: 'post',
         data:{
-            userStudy: hadStudy
+            "study": hadStudy
         }
     })
 }
@@ -15,7 +16,7 @@ export function getQuestions(hadStudy){
 //完成作答
 export function finishTest(newStudy){
     return request({
-        url: '/complete',
+        url: '/study/complete',
         method: 'post',
         data: {
             completeId: newStudy

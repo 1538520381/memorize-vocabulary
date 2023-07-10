@@ -8,7 +8,7 @@
                     </div>
                 </div>
                 <div class="nickname">
-                    {{ user.nickname }}
+                    {{ user.nickName }}
                 </div>
                 <div class="logoutButtonContainer">
                     <el-button class="logoutButton" type="primary" @click="logout()">退出登录</el-button>

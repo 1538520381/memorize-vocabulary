@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import axios from 'axios'
 import router from '@/router'
 
@@ -38,6 +39,7 @@ service.interceptors.response.use(
     return response
   },
   error => {
+    Vue.prototype.$message.error('服务器异常，请稍后')
     return Promise.resolve(error)
   })
 

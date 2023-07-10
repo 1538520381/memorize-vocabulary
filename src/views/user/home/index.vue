@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="modeContainer">
-                    <div class="selfTestMode" @click="$router.push('/test')">
+                    <div class="selfTestMode" @click="$router.push({ path: '/exam', query: { type: 0 } })">
                         <div class="picture">
                             我是图片
                         </div>
@@ -25,8 +25,8 @@
                             自测
                         </div>
                     </div>
-                    <div class="testMode" @click="$router.push('/test')">
-                        <div class="picture">
+                    <div class="testMode" @click="$router.push({ path: '/exam', query: { type: 1 } })">
+                        <div class=" picture">
                             我是图片
                         </div>
                         <div class="mode">
