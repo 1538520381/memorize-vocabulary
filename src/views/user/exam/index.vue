@@ -51,7 +51,6 @@ export default {
 
             trueNum: 0,
             falseNum: 0
-
         }
     },
     created() {
@@ -59,29 +58,33 @@ export default {
             if (res.data.code == 1) {
                 this.trueOptions = res.data.data.trueWord
                 this.falseOptions = res.data.data.falseWord
+                this.mode = this.$route.query.type
+                this.getNewQuestion()
             } else {
                 this.$message.error(res.data.msg)
             }
         })
-        this.mode = this.$route.query.type
-        this.getNewQuestion()
     },
     methods: {
         getNewQuestion() {
-            this.currentStem = {}
-            this.currentOptions = []
-            if (Math.random() < 0.6) {
-                this.currentType = 0
+            if (this.index < this.trueOptions.length) {
+                this.currentStem = {}
+                this.currentOptions = []
+                if (Math.random() < 0.6) {
+                    this.currentType = 0
+                } else {
+                    this.currentType = 1;
+                }
+                this.currentOptions.push(this.trueOptions[this.index])
+                for (var i = 0; i <= 2; i++) {
+                    this.currentOptions.push(this.falseOptions[this.index * 3 + i])
+                }
+                this.currentOptions.sort(function () {
+                    return (0.5 - Math.random())
+                })
             } else {
-                this.currentType = 1;
+                this.$router.push({ path: '/finish', query: { score: this.trueNum / (this.trueNum + this.falseNum) * 100 } })
             }
-            this.currentOptions.push(this.trueOptions[this.index])
-            for (var i = 0; i <= 2; i++) {
-                this.currentOptions.push(this.falseOptions[this.index * 3 + i])
-            }
-            this.currentOptions.sort(function () {
-                return (0.5 - Math.random())
-            })
         },
         check(index) {
             if (this.currentOptions[index].word == this.trueOptions[this.index].word) {
