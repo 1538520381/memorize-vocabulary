@@ -2,14 +2,14 @@
     <div class="container">
         <div class="mainContainer">
             <div class="modelContainer">
-                {{ mode == 1 ? '自测' : '考试' }}
+                {{ mode == 0 ? '自测' : '考试' }}
             </div>
             <div class="questionContainer" v-if="currentType == 0">
                 <div class="questionStemContainer">
                     {{ trueOptions[index].word }}
                 </div>
                 <div class="questionOptionsContainer" v-if="optionsRefresh">
-                    <div :class="checkFlag == 0 ? 'questionOptionContainer' : (checkFlag == 1 ? 'questionTrueOptionContainer' : 'questionFalseOptionContainer')"
+                    <div :class="checkFlag[value] == 0 ? 'questionOptionContainer' : (checkFlag[value] == 1 ? 'questionTrueOptionContainer' : 'questionFalseOptionContainer')"
                         v-for="(item, value) in currentOptions" @click="check(value)">
                         <span class="questionOptionItem">{{ item.translation }}</span>
                     </div>
@@ -20,7 +20,7 @@
                     {{ trueOptions[index].translation }}
                 </div>
                 <div class="questionOptionsContainer" v-if="optionsRefresh">
-                    <div :class="checkFlag == 0 ? 'questionOptionContainer' : (checkFlag == 1 ? 'questionTrueOptionContainer' : 'questionFalseOptionContainer')"
+                    <div :class="checkFlag[value] == 0 ? 'questionOptionContainer' : (checkFlag[value] == 1 ? 'questionTrueOptionContainer' : 'questionFalseOptionContainer')"
                         v-for="(item, value) in currentOptions" @click="check(value)">
                         <span class="questionOptionItem">{{ item.word }}</span>
                     </div>
@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import { getQuestions } from '@/api/user/exam'
-import { getMemorizedWords } from '@/utils/localStroageUtil'
+import { getQuestions, saveNewStudy, saveWrongWords } from '@/api/user/exam'
+import { getMemorizedWords, setMemorizedWords } from '@/utils/localStroageUtil'
 export default {
     name: 'exam',
     data() {
@@ -49,12 +49,15 @@ export default {
             checkFlag: [0, 0, 0, 0],
             optionsRefresh: true,
 
+            newStudy: [],
+            wrongStudy: [],
+
             trueNum: 0,
             falseNum: 0
         }
     },
     created() {
-        getQuestions(getMemorizedWords()).then((res) => {
+        getQuestions(getMemorizedWords().split(',')).then((res) => {
             if (res.data.code == 1) {
                 this.trueOptions = res.data.data.trueWord
                 this.falseOptions = res.data.data.falseWord
@@ -64,9 +67,22 @@ export default {
                 this.$message.error(res.data.msg)
             }
         })
+        var _this = this
+        setInterval(function () {
+            if (_this.mode == 1) {
+                _this.saveNewStudy()
+            }
+        }, 10000)
+    },
+    destroyed() {
+        if (this.mode == 1) {
+            this.saveNewStudy()
+        }
     },
     methods: {
         getNewQuestion() {
+            console.log(this.trueOptions)
+            console.log(this.falseOptions)
             if (this.index < this.trueOptions.length) {
                 this.currentStem = {}
                 this.currentOptions = []
@@ -82,28 +98,66 @@ export default {
                 this.currentOptions.sort(function () {
                     return (0.5 - Math.random())
                 })
+                this.checkFlag = [0, 0, 0, 0]
             } else {
+                if (this.mode == 1) {
+                    this.saveNewStudy()
+                }
                 this.$router.push({ path: '/finish', query: { score: this.trueNum / (this.trueNum + this.falseNum) * 100 } })
             }
         },
         check(index) {
-            if (this.currentOptions[index].word == this.trueOptions[this.index].word) {
-                this.checkFlag[index] = 1
-                this.trueNum++
-            } else {
+            if (this.currentOptions[index].word != this.trueOptions[this.index].word) {
                 this.checkFlag[index] = 2
                 this.falseNum++
+                this.wrongStudy.push(this.trueOptions[this.index].id)
+            }
+            for (var i = 0; i < 4; i++) {
+                if (this.currentOptions[i].word == this.trueOptions[this.index].word) {
+                    this.checkFlag[i] = 1
+                    if (i == index) {
+                        this.trueNum++
+                        this.newStudy.push(this.trueOptions[this.index].id)
+                    }
+                }
             }
             this.refresh()
+            var _this = this
             setTimeout(function () {
-                index++
-                this.getNewQuestion()
+                _this.index++
+                _this.getNewQuestion()
             }, 2000)
         },
         refresh() {
             this.optionsRefresh = false
             this.optionsRefresh = true
         },
+        saveNewStudy() {
+            var array = getMemorizedWords().split(',')
+            console.log(this.newStudy)
+            console.log(array)
+            for (var i = 0; i < this.newStudy.length; i++) {
+                array.push(this.newStudy[i])
+            }
+            console.log(array)
+            setMemorizedWords(array)
+            saveNewStudy(this.newStudy).then((res) => {
+                if (res.data.code == 1) {
+
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            })
+            saveWrongWords(this.wrongStudy).then((res) => {
+                if (res.data.code == 1) {
+
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            })
+            this.newStudy = []
+            this.wrongStudy = []
+        }
     }
 }
 </script>
@@ -142,10 +196,11 @@ export default {
 .questionStemContainer {
     width: 100%;
     height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 40px;
+    font-size: 25px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .questionOptionsContainer {
@@ -163,8 +218,8 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 30px;
-    background-color: rgb(216, 161, 88);
+    font-size: 20px;
+    background-color: white;
 }
 
 .questionTrueOptionContainer {
@@ -176,7 +231,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 30px;
+    font-size: 20px;
     background-color: rgb(94, 213, 80);
 }
 
@@ -189,8 +244,8 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 30px;
-    background-color: rgb(209, 56, 39);
+    font-size: 20px;
+    background-color: rgb(228, 121, 109);
 }
 
 .questionOptionContainer:hover {
@@ -198,35 +253,7 @@ export default {
     margin: 10px;
     padding: 10px;
     border-radius: 20px;
-    font-size: 30px;
-    background-color: rgb(211, 183, 146);
-}
-
-.questionOptionTrueContainer {
-    width: calc(100% - 40px);
-    margin: 10px;
-    padding: 10px;
-    border-radius: 20px;
     font-size: 20px;
-    background-color: rgb(94, 213, 80);
-}
-
-.questionOptionFalseContainer {
-    width: calc(100% - 40px);
-    margin: 10px;
-    padding: 10px;
-    border-radius: 20px;
-    font-size: 20px;
-    background-color: rgb(209, 56, 39);
-}
-
-.questionOptionChoiceContainer {
-    width: calc(100% - 40px);
-    margin: 10px;
-    padding: 10px;
-    border-radius: 20px;
-    font-size: 20px;
-    background-color: rgb(20, 196, 219);
 }
 
 .questionOptionId {
@@ -239,6 +266,10 @@ export default {
 }
 
 .questionOptionItem {
+    width: 90%;
     padding: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>

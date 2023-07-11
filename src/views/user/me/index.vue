@@ -3,15 +3,42 @@
         <el-container>
             <el-main class="mainContainer">
                 <div class="avatarContainer">
-                    <div class="avatar">
-                        {{ user.avatar }}
-                    </div>
+                    <img class="avatar" :src="user.avatar">
                 </div>
                 <div class="nickname">
                     {{ user.nickName }}
                 </div>
-                <div class="logoutButtonContainer">
-                    <el-button class="logoutButton" type="primary" @click="logout()">退出登录</el-button>
+                <!-- <div class="listContainer">
+                    <el-button class="listItem">
+                        <svg-icon class="icon" icon-class="nickname"></svg-icon>
+                        <span class="item">
+                            修改昵称
+                        </span>
+                    </el-button>
+                </div>
+                <div class="listContainer">
+                    <el-button class="listItem">
+                        <svg-icon class="icon" icon-class="password"></svg-icon>
+                        <span class="item">
+                            修改密码
+                        </span>
+                    </el-button>
+                </div> -->
+                <!-- <div class="listContainer">
+                    <el-button class="listItem">
+                        <svg-icon class="icon" icon-class="contact"></svg-icon>
+                        <span class="item">
+                            联系我们
+                        </span>
+                    </el-button>
+                </div> -->
+                <div class="listContainer" @click="logout()">
+                    <el-button class="listItem">
+                        <svg-icon class="icon" icon-class="logout"></svg-icon>
+                        <span class="item">
+                            退出登录
+                        </span>
+                    </el-button>
                 </div>
             </el-main>
             <el-footer class="footerContainer">
@@ -97,15 +124,31 @@ export default {
     font-size: 24px;
 }
 
-.logoutButtonContainer {
+.listContainer {
     width: 100%;
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
 }
 
-.logoutButton {
-    width: 100px;
+.listItem {
+    width: 100%;
+    height: 40px;
+    padding: 0px 10px 0px 10px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.icon {
+    width: 30px;
+    height: 30px;
+    float: left;
+}
+
+.item {
+    height: 30px;
+    padding-left: 10px;
+    float: left;
+    display: flex;
+    align-items: center;
 }
 
 .footerContainer {

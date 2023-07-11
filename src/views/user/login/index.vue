@@ -47,7 +47,7 @@
 
 <script>
 import { isEmail, isExist } from '@/utils/validate'
-import { setUserToken, setMemorizedWords } from '@/utils/localStroageUtil'
+import { setUserToken, setMemorizedWords, getMemorizedWords } from '@/utils/localStroageUtil'
 
 import { sendCode } from '@/api/util'
 import { login } from '@/api/user/login'

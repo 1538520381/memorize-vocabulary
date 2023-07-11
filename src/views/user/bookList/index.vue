@@ -9,10 +9,10 @@
                 <div class="searchConatiner">
                     <input class="searchInput" placeholder="请输入您要查询的书名" v-model="search" @change="getBookList()">
                 </div>
-                <div class="booksContainer">
+                <el-scrollbar class="booksContainer">
                     <div class="bookContainer" v-for="item in bookList">
-                        <div class="bookPhoto">
-                            <img :src="item.cover">
+                        <div class="bookCoverContainer">
+                            <img class="bookCover" :src="item.cover">
                         </div>
                         <div class="informationContainer">
                             <div class="nameContainer">
@@ -26,11 +26,12 @@
                             <el-button class="useBookButton" type="primary" @click="chooseBook(item.id)">选择此书</el-button>
                         </div>
                     </div>
-                </div>
+                </el-scrollbar>
             </el-main>
             <el-footer class="footerContainer">
                 <div class="paginationContainer">
-                    <el-pagination layout="prev, pager, next" :sizes="page">
+                    <el-pagination small layout="prev, pager, next" :current-page.sync="page" :total="pageNum"
+                        :page-size="pageNum" @current-change="getBookList()">
                     </el-pagination>
                 </div>
             </el-footer>
@@ -56,6 +57,9 @@ export default {
     },
     methods: {
         getBookList() {
+            console.log(this.page)
+            console.log(this.pageNum)
+            console.log(this.search)
             getBookList(this.page, this.pageNum, this.search).then((res) => {
                 if (res.data.code == 1) {
                     this.bookList = res.data.data
@@ -121,6 +125,7 @@ export default {
     padding: 20px 30px 20px 30px;
     border-radius: 30px;
     background-color: aliceblue;
+    display: inline-block;
 }
 
 .bookContainer {
@@ -131,11 +136,14 @@ export default {
     background-color: rgb(255, 255, 255);
 }
 
-.bookPhoto {
-    width: 30%;
+.bookCoverContainer {
     height: 100%;
     float: left;
     background-color: rgb(238, 240, 240);
+}
+
+.bookCover {
+    height: 100%;
 }
 
 .informationContainer {

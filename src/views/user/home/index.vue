@@ -6,8 +6,8 @@
                     10ve4Word5
                 </div>
                 <div class="bookConatiner">
-                    <div class="bookPhoto">
-                        我是词书封面
+                    <div class="bookCoverContainer">
+                        <img class="bookCover" :src="userBook.cover">
                     </div>
                     <div class="bookTitle">
                         四级词汇
@@ -15,20 +15,28 @@
                     <div class="selectBook" @click="$router.push('/bookList')">
                         更改➢
                     </div>
+                    <div class="studyProgressContainer">
+                        <div class="studyProgressTitle">
+                            学习进度：
+                        </div>
+                        <div class="studyProgress">
+                            <el-progress :percentage="hadStudyNum"></el-progress>
+                        </div>
+                    </div>
                 </div>
                 <div class="modeContainer">
                     <div class="selfTestMode" @click="$router.push({ path: '/exam', query: { type: 0 } })">
-                        <div class="picture">
+                        <!-- <div class="picture">
                             我是图片
-                        </div>
+                        </div> -->
                         <div class="mode">
                             自测
                         </div>
                     </div>
                     <div class="testMode" @click="$router.push({ path: '/exam', query: { type: 1 } })">
-                        <div class=" picture">
+                        <!-- <div class=" picture">
                             我是图片
-                        </div>
+                        </div> -->
                         <div class="mode">
                             考试
                         </div>
@@ -44,7 +52,9 @@
 
 <script>
 import { getUser } from '@/api/util';
+import { getBookById } from '@/api/user/home';
 import Menu from '@/components/user/menu/Menu.vue';
+import { getMemorizedWords } from '@/utils/localStroageUtil';
 export default {
     name: 'home',
     components: {
@@ -52,7 +62,9 @@ export default {
     },
     data() {
         return {
-            user: {}
+            user: {},
+            userBook: {},
+            hadStudyNum: 0,
         }
     },
     created() {
@@ -63,6 +75,20 @@ export default {
             getUser().then((res) => {
                 if (res.data.code == 1) {
                     this.user = res.data.data
+                    this.getUserBook()
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            })
+        },
+        getUserBook() {
+            getBookById(getMemorizedWords().split(',')).then((res) => {
+                console.log(res.data.data)
+                if (res.data.code == 1) {
+                    this.userBook = res.data.data.book
+                    console.log(res.data.data.unStudy)
+                    this.hadStudyNum = (parseInt(this.userBook.num) - res.data.data.unStudy) / parseInt(this.userBook.num) * 100
+                    console.log(this.hadStudyNum)
                 } else {
                     this.$message.error(res.data.msg)
                 }
@@ -95,22 +121,26 @@ export default {
 }
 
 .bookConatiner {
-    width: calc(100% - 40px);
-    height: 100px;
-    padding: 20px;
+    width: calc(100% - 20px);
+    height: 120px;
+    padding: 20px 0px 0px 20px;
     border-radius: 40px;
     background-color: rgb(248, 210, 161);
 }
 
-.bookPhoto {
-    width: 30%;
-    height: 100%;
+.bookCoverContainer {
+    height: calc(100% - 20px);
     float: left;
     background-color: rgb(238, 240, 240);
 }
 
+.bookCover {
+    height: 100%;
+}
+
 .bookTitle {
-    max-width: 36%;
+    max-width: 40%;
+    height: 30%;
     padding-left: 15px;
     float: left;
     white-space: nowrap;
@@ -120,8 +150,28 @@ export default {
 
 .selectBook {
     padding-left: 5px;
+    height: 30%;
     float: left;
     color: grey;
+}
+
+.studyProgressContainer {
+    width: 75%;
+    height: 70%;
+    padding: 20px 0px 0px 0px;
+    float: left;
+}
+
+.studyProgressTitle {
+    height: 70%;
+    padding-left: 15px;
+    float: left;
+}
+
+.studyProgress {
+    width: 57%;
+    height: 70%;
+    float: left;
 }
 
 .modeContainer {
@@ -138,6 +188,8 @@ export default {
     height: calc(50% - 10px);
     border-radius: 20px;
     background-color: rgb(40, 110, 234);
+    display: flex;
+    justify-content: center;
 }
 
 .picture {
@@ -165,6 +217,8 @@ export default {
     margin-top: 20px;
     border-radius: 20px;
     background-color: rgb(253, 203, 46);
+    display: flex;
+    justify-content: center;
 }
 
 .footerContainer {
