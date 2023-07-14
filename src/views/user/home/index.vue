@@ -10,7 +10,7 @@
                         <img class="bookCover" :src="userBook.cover">
                     </div>
                     <div class="bookTitle">
-                        四级词汇
+                        {{ userBook.title }}
                     </div>
                     <div class="selectBook" @click="$router.push('/bookList')">
                         更改➢
@@ -20,7 +20,7 @@
                             学习进度：
                         </div>
                         <div class="studyProgress">
-                            <el-progress :percentage="hadStudyNum"></el-progress>
+                            <el-progress :percentage="round(hadStudyNum,1)"></el-progress>
                         </div>
                     </div>
                 </div>
@@ -55,6 +55,7 @@ import { getUser } from '@/api/util';
 import { getBookById } from '@/api/user/home';
 import Menu from '@/components/user/menu/Menu.vue';
 import { getMemorizedWords } from '@/utils/localStroageUtil';
+import { round } from '@/utils/common'
 export default {
     name: 'home',
     components: {
@@ -93,7 +94,8 @@ export default {
                     this.$message.error(res.data.msg)
                 }
             })
-        }
+        },
+        round: round
     }
 }
 </script>

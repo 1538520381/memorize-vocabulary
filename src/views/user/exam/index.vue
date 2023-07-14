@@ -6,7 +6,12 @@
             </div>
             <div class="questionContainer" v-if="currentType == 0">
                 <div class="questionStemContainer">
-                    {{ trueOptions[index].word }}
+                    <span class="stem">
+                        {{ trueOptions[index].word }}
+                    </span>
+                    <span class="videoContainer" @click="audio()">
+                        <svg-icon class="video" icon-class="video"></svg-icon>
+                    </span>
                 </div>
                 <div class="questionOptionsContainer" v-if="optionsRefresh">
                     <div :class="checkFlag[value] == 0 ? 'questionOptionContainer' : (checkFlag[value] == 1 ? 'questionTrueOptionContainer' : 'questionFalseOptionContainer')"
@@ -17,7 +22,9 @@
             </div>
             <div class="questionContainer" v-else>
                 <div class="questionStemContainer">
-                    {{ trueOptions[index].translation }}
+                    <span class="stem">
+                        {{ trueOptions[index].translation }}
+                    </span>
                 </div>
                 <div class="questionOptionsContainer" v-if="optionsRefresh">
                     <div :class="checkFlag[value] == 0 ? 'questionOptionContainer' : (checkFlag[value] == 1 ? 'questionTrueOptionContainer' : 'questionFalseOptionContainer')"
@@ -65,24 +72,13 @@ export default {
                 this.getNewQuestion()
             } else {
                 this.$message.error(res.data.msg)
+                this.$router.push('/home')
             }
         })
         var _this = this
-        setInterval(function () {
-            if (_this.mode == 1) {
-                _this.saveNewStudy()
-            }
-        }, 10000)
-    },
-    destroyed() {
-        if (this.mode == 1) {
-            this.saveNewStudy()
-        }
     },
     methods: {
         getNewQuestion() {
-            console.log(this.trueOptions)
-            console.log(this.falseOptions)
             if (this.index < this.trueOptions.length) {
                 this.currentStem = {}
                 this.currentOptions = []
@@ -107,39 +103,34 @@ export default {
             }
         },
         check(index) {
-            if (this.currentOptions[index].word != this.trueOptions[this.index].word) {
-                this.checkFlag[index] = 2
-                this.falseNum++
-                this.wrongStudy.push(this.trueOptions[this.index].id)
-            }
-            for (var i = 0; i < 4; i++) {
-                if (this.currentOptions[i].word == this.trueOptions[this.index].word) {
-                    this.checkFlag[i] = 1
-                    if (i == index) {
-                        this.trueNum++
-                        this.newStudy.push(this.trueOptions[this.index].id)
+            if (this.checkFlag[0] + this.checkFlag[1] + this.checkFlag[2] + this.checkFlag[3] == 0) {
+                if (this.currentOptions[index].word != this.trueOptions[this.index].word) {
+                    this.checkFlag[index] = 2
+                    this.falseNum++
+                    this.wrongStudy.push(this.trueOptions[this.index].id)
+                }
+                for (var i = 0; i < 4; i++) {
+                    if (this.currentOptions[i].word == this.trueOptions[this.index].word) {
+                        this.checkFlag[i] = 1
+                        if (i == index) {
+                            this.trueNum++
+                            this.newStudy.push(this.trueOptions[this.index].id)
+                        }
                     }
                 }
+                this.refresh()
+                var _this = this
+                setTimeout(function () {
+                    _this.index++
+                    _this.getNewQuestion()
+                }, 2000)
             }
-            this.refresh()
-            var _this = this
-            setTimeout(function () {
-                _this.index++
-                _this.getNewQuestion()
-            }, 2000)
-        },
-        refresh() {
-            this.optionsRefresh = false
-            this.optionsRefresh = true
         },
         saveNewStudy() {
             var array = getMemorizedWords().split(',')
-            console.log(this.newStudy)
-            console.log(array)
             for (var i = 0; i < this.newStudy.length; i++) {
                 array.push(this.newStudy[i])
             }
-            console.log(array)
             setMemorizedWords(array)
             saveNewStudy(this.newStudy).then((res) => {
                 if (res.data.code == 1) {
@@ -157,7 +148,15 @@ export default {
             })
             this.newStudy = []
             this.wrongStudy = []
-        }
+        },
+        audio() {
+            var audio = new Audio('http://dict.youdao.com/dictvoice?audio=' + this.trueOptions[this.index].word)
+            audio.play()
+        },
+        refresh() {
+            this.optionsRefresh = false
+            this.optionsRefresh = true
+        },
     }
 }
 </script>
@@ -191,16 +190,33 @@ export default {
     height: calc(100% - 120px);
     border-radius: 30px;
     padding: 20px 2% 20px 2%;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .questionStemContainer {
     width: 100%;
     height: 40px;
-    font-size: 25px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.stem{
+    height: 100%;
+    font-size: 25px;
+}
+
+.videoContainer {
+    width: 20px;
+    height: 20px;
+    padding-left: 5px;
+}
+
+.video {
+    width: 20px;
+    height: 20px;
 }
 
 .questionOptionsContainer {

@@ -8,59 +8,82 @@
                 <div class="nickname">
                     {{ user.nickName }}
                 </div>
-                <!-- <div class="listContainer">
-                    <el-button class="listItem">
-                        <svg-icon class="icon" icon-class="nickname"></svg-icon>
-                        <span class="item">
-                            修改昵称
-                        </span>
-                    </el-button>
-                </div>
-                <div class="listContainer">
-                    <el-button class="listItem">
-                        <svg-icon class="icon" icon-class="password"></svg-icon>
-                        <span class="item">
-                            修改密码
-                        </span>
-                    </el-button>
-                </div> -->
-                <!-- <div class="listContainer">
-                    <el-button class="listItem">
-                        <svg-icon class="icon" icon-class="contact"></svg-icon>
-                        <span class="item">
-                            联系我们
-                        </span>
-                    </el-button>
-                </div> -->
-                <div class="listContainer" @click="logout()">
-                    <el-button class="listItem">
-                        <svg-icon class="icon" icon-class="logout"></svg-icon>
-                        <span class="item">
-                            退出登录
-                        </span>
-                    </el-button>
+                <div class="listsContainer">
+                    <div class="listContainer">
+                        <el-button class="listItem" @click="changeNameDialog(true)">
+                            <svg-icon class="icon" icon-class="nickname"></svg-icon>
+                            <span class="item">
+                                修改昵称
+                            </span>
+                        </el-button>
+                    </div>
+                    <div class="listContainer">
+                        <el-button class="listItem" @click="changeAvatarDialog(true)">
+                            <svg-icon class="icon" icon-class="avatar"></svg-icon>
+                            <span class="item">
+                                修改头像
+                            </span>
+                        </el-button>
+                    </div>
+                    <div class="listContainer">
+                        <el-button class="listItem" @click="changePasswordDialog(true)">
+                            <svg-icon class="icon" icon-class="password"></svg-icon>
+                            <span class="item">
+                                修改密码
+                            </span>
+                        </el-button>
+                    </div>
+                    <div class="listContainer">
+                        <el-button class="listItem">
+                            <svg-icon class="icon" icon-class="contact"></svg-icon>
+                            <span class="item">
+                                联系我们
+                            </span>
+                        </el-button>
+                    </div>
+                    <div class="listContainer" @click="logout()">
+                        <el-button class="listItem">
+                            <svg-icon class="icon" icon-class="logout"></svg-icon>
+                            <span class="item">
+                                退出登录
+                            </span>
+                        </el-button>
+                    </div>
                 </div>
             </el-main>
             <el-footer class="footerContainer">
-                <Menu :current="2"></Menu>
+                <Menu :current="3"></Menu>
             </el-footer>
         </el-container>
+        <ChangeName :changeNameDialogVis="changeNameDialogVis" :nickname="user.nickName"
+            @changeNameDialog="changeNameDialog"></ChangeName>
+        <ChangeAvatar :changeAvatarDialogVis="changeAvatarDialogVis" :avatar="user.avatar"
+            @changeAvatarDialog="changeAvatarDialog"></ChangeAvatar>
+        <ChangePassword :changePasswordDialogVis="changePasswordDialogVis" @changePasswordDialog="changePasswordDialog"></ChangePassword>
     </div>
 </template>
 
 <script>
 import { logout } from '@/api/user/me';
 import { getUser } from '@/api/util';
-import Menu from '@/components/user/menu/Menu.vue';
+
 import { removeUserToken } from '@/utils/localStroageUtil';
+
+import Menu from '@/components/user/menu/Menu.vue';
+import ChangeName from './changeName.vue';
+import ChangeAvatar from './changeAvatar.vue';
+import ChangePassword from './changePassword.vue'
 export default {
     name: 'home',
     components: {
-        Menu
+        Menu, ChangeName, ChangeAvatar, ChangePassword
     },
     data() {
         return {
-            user: {}
+            user: {},
+            changeNameDialogVis: false,
+            changeAvatarDialogVis: false,
+            changePasswordDialogVis: false
         }
     },
     created() {
@@ -86,6 +109,18 @@ export default {
                     this.$message.error(res.data.msg)
                 }
             })
+        },
+        changeNameDialog(flag) {
+            this.getUser()
+            this.changeNameDialogVis = flag
+        },
+        changeAvatarDialog(flag) {
+            this.getUser()
+            this.changeAvatarDialogVis = flag
+        },
+        changePasswordDialog(flag){
+            this.getUser()
+            this.changePasswordDialogVis = flag
         }
     }
 }
@@ -122,6 +157,11 @@ export default {
     margin-top: 20px;
     text-align: center;
     font-size: 24px;
+}
+
+.listsContainer {
+    width: 100%;
+    margin-top: 20px;
 }
 
 .listContainer {

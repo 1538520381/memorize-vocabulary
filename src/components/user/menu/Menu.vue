@@ -10,9 +10,17 @@
         </div>
         <div class="menuItem">
             <div class="iconContainer" @click="goTo(2)">
-                <svg-icon :class="current == 2 ? 'currentIcon' : 'icon'" icon-class="me"></svg-icon>
+                <svg-icon :class="current == 2 ? 'currentIcon' : 'icon'" icon-class="score"></svg-icon>
             </div>
             <div :class="current == 2 ? 'currentLabelContainer' : 'labelContainer'">
+                成绩
+            </div>
+        </div>
+        <div class="menuItem">
+            <div class="iconContainer" @click="goTo(3)">
+                <svg-icon :class="current == 3 ? 'currentIcon' : 'icon'" icon-class="me"></svg-icon>
+            </div>
+            <div :class="current == 3 ? 'currentLabelContainer' : 'labelContainer'">
                 我的
             </div>
         </div>
@@ -30,6 +38,8 @@ export default {
             if (id != this.current) {
                 if (id == 1) {
                     this.$router.push('/home')
+                } else if (id == 2) {
+                    this.$router.push('/score')
                 } else {
                     this.$router.push('/me')
                 }
@@ -49,13 +59,13 @@ export default {
 }
 
 .menuItem {
-    width: 40%;
+    width: 30%;
     height: 100%;
-    margin: 0px 10% 0px 10%;
+    margin: 0px 0px 0px 0px;
 }
 
 .iconContainer {
-    width: 30px;
+    width: 20px;
     height: calc(100% - 10px);
     margin: 5px;
     float: left;
@@ -64,8 +74,8 @@ export default {
 }
 
 .icon {
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
 }
 
 .currentIcon {
@@ -75,7 +85,7 @@ export default {
 }
 
 .labelContainer {
-    width: calc(100% - 40px);
+    width: calc(100% - 30px);
     height: 100%;
     float: left;
     display: flex;
@@ -84,7 +94,7 @@ export default {
 }
 
 .currentLabelContainer {
-    width: calc(100% - 40px);
+    width: calc(100% - 30px);
     height: 100%;
     float: left;
     display: flex;

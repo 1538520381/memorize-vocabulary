@@ -24,6 +24,11 @@ export const constantRoutes = [
         component: () => import('@/views/user/home')
     },
     {
+        path:'/score',
+        name: 'score',
+        component:() => import('@/views/user/score')
+    },
+    {
         path: '/me',
         name: 'me',
         component: () => import('@/views/user/me')
@@ -42,7 +47,7 @@ export const constantRoutes = [
         path: '/finish',
         name: 'finish',
         component: () => import('@/views/user/finish')
-    }
+    },
 ]
 
 const createRouter = () => new VueRouter({

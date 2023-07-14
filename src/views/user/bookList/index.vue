@@ -19,7 +19,7 @@
                                 {{ item.title }}
                             </div>
                             <div class="wordNumContainer">
-                                {{ item.num }}
+                                {{ item.num + '词' }}
                             </div>
                         </div>
                         <div class="useBookButtonContainer">
@@ -48,7 +48,7 @@ export default {
         return {
             bookList: [],
             page: 1,
-            pageNum: 3,
+            pageNum: 2,
             search: ''
         }
     },
@@ -57,9 +57,6 @@ export default {
     },
     methods: {
         getBookList() {
-            console.log(this.page)
-            console.log(this.pageNum)
-            console.log(this.search)
             getBookList(this.page, this.pageNum, this.search).then((res) => {
                 if (res.data.code == 1) {
                     this.bookList = res.data.data
@@ -121,7 +118,7 @@ export default {
 
 .booksContainer {
     width: calc(100% - 60px);
-    height: calc(100% - 140px);
+    height: calc(100% - 150px);
     padding: 20px 30px 20px 30px;
     border-radius: 30px;
     background-color: aliceblue;
@@ -130,8 +127,9 @@ export default {
 
 .bookContainer {
     width: 100%;
-    height: calc(33% - 20px);
-    margin: 10px 0px 20px 0px;
+    height: 100px;
+    margin: 10px 0px 0px 0px;
+    padding: 10px;
     border-radius: 20px;
     background-color: rgb(255, 255, 255);
 }
@@ -139,11 +137,12 @@ export default {
 .bookCoverContainer {
     height: 100%;
     float: left;
-    background-color: rgb(238, 240, 240);
+    display: flex;
+    align-items: center;
 }
 
 .bookCover {
-    height: 100%;
+    height: 80%;
 }
 
 .informationContainer {
@@ -155,17 +154,17 @@ export default {
 .nameContainer {
     width: calc(60% - 10px);
     height: 100%;
-    padding-left: 10px;
-    font-size: 20px;
+    padding-left: 30px;
+    font-size: 12px;
     float: left;
     display: flex;
     align-items: center;
 }
 
 .wordNumContainer {
-    width: 40%;
+    width: calc(40% - 30px);
     height: 100%;
-    font-size: 16px;
+    font-size: 12px;
     float: left;
     display: flex;
     align-items: center;
